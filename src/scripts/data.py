@@ -21,6 +21,8 @@ def load_data(file_path: str) -> pd.DataFrame:
 def feature_engineering(data: pd.DataFrame) -> pd.DataFrame:
     data['performance'] = data['Peak Position'].apply(categorize_peak)
     data['energy_level'] = data['Energy'].apply(categorize_energy)
+    data['danceability_level'] = data['Danceability'].apply(categorize_danceability)
+    data['energy_danceability_mean'] = (data['Energy'] + data['Danceability']) / 2
 
     current_year = datetime.now().year
     data['time_since_release'] = current_year - data['Release Year']
@@ -44,15 +46,25 @@ def categorize_peak(position):
         return 'Bad'
 
 
-def categorize_energy(level):
-    if 0 <= level <= 0.25:
+def categorize_energy(energy):
+    if 0 <= energy <= 0.25:
+        return 'VeryLow'
+    elif 0.26 <= energy < 0.40:
         return 'Low'
-    elif 0.26 <= level < 0.40:
+    elif 0.41 <= energy < 0.60:
         return 'Medium'
-    elif 0.41 <= level < 0.60:
-        return 'High'
     else:
-        return 'Very High'
+        return 'High'
+
+def categorize_danceability(danceability):
+    if 0 <= danceability <= 0.25:
+        return 'VeryLow'
+    elif 0.26 <= danceability < 0.45:
+        return 'Low'
+    elif 0.46 <= danceability < 0.75:
+        return 'Medium'
+    else:
+        return 'High'
 
 
 def columns_to_drop() -> list:
