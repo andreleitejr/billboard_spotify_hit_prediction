@@ -35,24 +35,24 @@ def feature_engineering(data: pd.DataFrame) -> pd.DataFrame:
 
 def categorize_peak(position):
     if 1 <= position <= 10:
-        return 'Top'
-    elif 11 <= position <= 30:
+        return 'Great'
+    elif 11 <= position <= 33:
         return 'Good'
-    elif 31 <= position <= 60:
+    elif 31 <= position <= 66:
         return 'Medium'
     else:
         return 'Bad'
 
 
 def categorize_energy(level):
-    if level >= 0.75:
-        return 'Very High'
-    elif level >= 0.5:
-        return 'High'
-    elif level >= 0.25:
-        return 'Medium'
-    else:
+    if 0 <= level <= 0.25:
         return 'Low'
+    elif 0.26 <= level < 0.40:
+        return 'Medium'
+    elif 0.41 <= level < 0.60:
+        return 'High'
+    else:
+        return 'Very High'
 
 
 def columns_to_drop() -> list:
