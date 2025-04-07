@@ -8,7 +8,6 @@ def test():
     """Loads a trained model and preprocessor, applies feature engineering to test data,
     transforms features, makes predictions, and saves the results to a CSV file."""
     test_data = load_data(TEST_DATA_PATH)
-    test_data = feature_engineering(test_data)
 
     preprocessor = load_model(PREPROCESSOR_PATH)
     test_data_transformed = preprocessor.transform(test_data)

@@ -1,6 +1,6 @@
 from src.utils.config import TRAIN_DATA_PATH, MODEL_PATH, PREPROCESSOR_PATH
 from src.scripts.data import load_data, split_data, preprocess_data, feature_engineering
-from src.scripts.model import train_model, evaluate_model, save_model, cross_validate_model
+from src.scripts.model import train_model, save_model, validate_model
 
 
 def train():
@@ -9,11 +9,11 @@ def train():
     evaluates performance, performs cross-validation, and saves the trained model."""
     data = load_data(TRAIN_DATA_PATH)
     data = feature_engineering(data)
+    data = preprocess_data(data)
 
     X_train, X_valid, y_train, y_valid = split_data(data)
-    X_train, X_valid = preprocess_data(X_train, X_valid, PREPROCESSOR_PATH)
-    model = train_model(X_train, X_valid, y_train, y_valid)
-    cross_validate_model(model, X_train, y_train)
+    model = train_model(X_train, y_train)
+    validate_model(model, X_valid, y_valid)
 
     save_model(model, MODEL_PATH)
 

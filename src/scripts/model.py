@@ -1,9 +1,6 @@
 import joblib
-import numpy as np
-from sklearn.metrics import mean_absolute_error, r2_score, make_scorer, mean_squared_log_error
-from sklearn.model_selection import KFold, cross_val_score
-from xgboost import XGBRegressor
-from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import mean_absolute_error, r2_score, make_scorer, mean_squared_log_error, accuracy_score
 
 
 def load_model(model_path: str):
@@ -12,77 +9,26 @@ def load_model(model_path: str):
     return model
 
 
-def train_model(X_train, X_valid, y_train, y_valid) -> XGBRegressor:
+def train_model(X_train, y_train) -> RandomForestClassifier:
     """Trains an XGBoost regressor with predefined hyperparameters."""
-    params = {
-        'n_estimators': 500,
-        'learning_rate': 0.01,
-        'max_depth': 4,
-        'subsample': 0.8,
-        'colsample_bytree': 0.8,
-    }
 
-    model = XGBRegressor(**params, n_jobs=4)
-    model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], verbose=False)
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
 
     return model
 
 
-def grid_search_train_model(X_train, y_train) -> XGBRegressor:
-    """Trains an XGBoost regressor using GridSearchCV with cross-validation."""
-    param_grid = {
-        'n_estimators': [500, 600, 800, 1000],
-        'learning_rate': [0.01, 0.3, 0.05, 0.1],
-        'max_depth': [4, 6, 8],
-        'subsample': [0.5, 0.6, 0.8],
-        'colsample_bytree': [0.4, 0.6, 0.8],
-    }
-
-    model = XGBRegressor(n_jobs=4, verbosity=0)
-
-    grid_search = GridSearchCV(
-        estimator=model,
-        param_grid=param_grid,
-        scoring='r2',
-        cv=5,
-        n_jobs=-1,
-        verbose=1
-    )
-
-    grid_search.fit(X_train, y_train)
-
-    return grid_search.best_estimator_
-
-
-def evaluate_model(model, X_valid, y_valid) -> None:
+def validate_model(model, X_valid, y_valid) -> None:
+    """Calculates the Mean Absolute Error (MAE) and Accuracy."""
     predictions = model.predict(X_valid)
 
     mae = mean_absolute_error(y_valid, predictions)
-    r2 = r2_score(y_valid, predictions)
-    rmsle = np.sqrt(mean_squared_log_error(y_valid, predictions))
+    accuracy = accuracy_score(y_valid, predictions)
 
     print(
-        f'✅ Model evaluation completed.\n'
-        f'🎯 MAE: {mae:.2f}\n'
-        f'📈 RMSLE: {rmsle:.4f}\n'
-        f'🔍 Accuracy (R² Score): {r2:.4f} ({r2:.0%})\n'
-    )
-
-
-def cross_validate_model(model, X_valid, y_valid) -> None:
-    """Performs cross-validation and calculates the Mean Absolute Error (MAE) and Accuracy (R² Score)."""
-    cv = KFold(n_splits=5, shuffle=True, random_state=42)
-
-    mae_scores = -cross_val_score(model, X_valid, y_valid, cv=cv, scoring='neg_mean_absolute_error')
-    mean_mae, std_mae = np.mean(mae_scores), np.std(mae_scores)
-
-    r2_scores = cross_val_score(model, X_valid, y_valid, cv=cv, scoring=make_scorer(r2_score))
-    mean_r2, std_r2 = np.mean(r2_scores), np.std(r2_scores)
-
-    print(
-        f'✅ Cross-validation completed.\n'
-        f'📊 MAE (Cross-Validation): {mean_mae:.2f} (± {std_mae:.2f})\n'
-        f'🔍 Accuracy (R² Score - Cross Validation): {mean_r2:.4f} ({mean_r2:.0%}) (± {std_r2:.2f})\n'
+        f'✅ Validation completed!\n'
+        f'📊 MAE (Cross-Validation): {mae:.2f} (± {mae:.2f})\n'
+        f'🔍 Accuracy: {accuracy:.4f} ({accuracy:.0%})\n'
     )
 
 
