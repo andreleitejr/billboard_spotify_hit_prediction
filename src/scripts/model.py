@@ -1,6 +1,6 @@
 import joblib
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import mean_absolute_error, r2_score, make_scorer, mean_squared_log_error, accuracy_score
+from sklearn.metrics import mean_absolute_error, accuracy_score
 
 
 def load_model(model_path: str):
@@ -10,7 +10,7 @@ def load_model(model_path: str):
 
 
 def train_model(X_train, y_train) -> RandomForestClassifier:
-    """Trains an XGBoost regressor with predefined hyperparameters."""
+    """Trains an RandomForestClassifier with predefined hyperparameters."""
 
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)

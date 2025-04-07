@@ -9,10 +9,10 @@ def train():
     evaluates performance, performs cross-validation, and saves the trained model."""
     data = load_data(TRAIN_DATA_PATH)
     data = feature_engineering(data)
-    data = preprocess_data(data)
 
     X_train, X_valid, y_train, y_valid = split_data(data)
-    model = train_model(X_train, y_train)
+    X_train_processed = preprocess_data(X_train)
+    model = train_model(X_train_processed, y_train)
     validate_model(model, X_valid, y_valid)
 
     save_model(model, MODEL_PATH)
