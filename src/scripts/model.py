@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, r2_score, make_scorer, mean_squared_log_error
 from sklearn.model_selection import KFold, cross_val_score
 from xgboost import XGBRegressor
+from sklearn.model_selection import GridSearchCV
 
 
 def load_model(model_path: str):
@@ -12,19 +13,45 @@ def load_model(model_path: str):
 
 
 def train_model(X_train, X_valid, y_train, y_valid) -> XGBRegressor:
-    """Trains an XGBoost regressor with early stopping and predefined hyperparameters."""
+    """Trains an XGBoost regressor with predefined hyperparameters."""
     params = {
-        'n_estimators': 1000,
-        'learning_rate': 0.05,
-        'max_depth': 6,
-        'subsample': 0.6,
-        'colsample_bytree': 0.6,
+        'n_estimators': 500,
+        'learning_rate': 0.01,
+        'max_depth': 4,
+        'subsample': 0.8,
+        'colsample_bytree': 0.8,
     }
 
     model = XGBRegressor(**params, n_jobs=4)
     model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], verbose=False)
 
     return model
+
+
+def grid_search_train_model(X_train, y_train) -> XGBRegressor:
+    """Trains an XGBoost regressor using GridSearchCV with cross-validation."""
+    param_grid = {
+        'n_estimators': [500, 600, 800, 1000],
+        'learning_rate': [0.01, 0.3, 0.05, 0.1],
+        'max_depth': [4, 6, 8],
+        'subsample': [0.5, 0.6, 0.8],
+        'colsample_bytree': [0.4, 0.6, 0.8],
+    }
+
+    model = XGBRegressor(n_jobs=4, verbosity=0)
+
+    grid_search = GridSearchCV(
+        estimator=model,
+        param_grid=param_grid,
+        scoring='r2',
+        cv=5,
+        n_jobs=-1,
+        verbose=1
+    )
+
+    grid_search.fit(X_train, y_train)
+
+    return grid_search.best_estimator_
 
 
 def evaluate_model(model, X_valid, y_valid) -> None:
