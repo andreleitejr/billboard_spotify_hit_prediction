@@ -1,7 +1,6 @@
 import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_absolute_error, accuracy_score
-
 from src.scripts.analysis import plot_confusion_matrix
 
 
@@ -20,7 +19,7 @@ def train_model(X_train, y_train) -> RandomForestClassifier:
     return model
 
 
-def validate_model(model, X_valid, y_valid, analysis=False):
+def validate_model(model, X_valid, y_valid, analysis=False) -> None:
     """Calculates the Mean Absolute Error (MAE) and Accuracy."""
     predictions = model.predict(X_valid)
 
