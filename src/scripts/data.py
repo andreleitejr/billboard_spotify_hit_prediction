@@ -16,7 +16,7 @@ def load_data(file_path: str) -> pd.DataFrame:
 def feature_engineering(data: pd.DataFrame) -> pd.DataFrame:
     """Apply custom feature engineering to enhance the dataset."""
     data['Hit'] = data['Peak Position'].apply(lambda x: 1 if x <= 10 else 0)
-
+    print(data['Hit'].value_counts())
     return data
 
 

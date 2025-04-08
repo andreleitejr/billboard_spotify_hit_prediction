@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_absolute_error, accuracy_score
 
 
-def load_model(model_path: str):
+def load_model(model_path: str) -> RandomForestClassifier:
     """Loads a trained model from a file using joblib."""
     model = joblib.load(model_path)
     return model
@@ -18,7 +18,7 @@ def train_model(X_train, y_train) -> RandomForestClassifier:
     return model
 
 
-def validate_model(model, X_valid, y_valid) -> None:
+def validate_model(model, X_valid, y_valid) -> float:
     """Calculates the Mean Absolute Error (MAE) and Accuracy."""
     predictions = model.predict(X_valid)
 
@@ -30,6 +30,7 @@ def validate_model(model, X_valid, y_valid) -> None:
         f'📊 MAE (Cross-Validation): {mae:.2f} (± {mae:.2f})\n'
         f'🔍 Accuracy: {accuracy:.4f} ({accuracy:.0%})\n'
     )
+    return predictions
 
 
 def save_model(model, model_path: str) -> None:
