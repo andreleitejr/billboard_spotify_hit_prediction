@@ -23,12 +23,9 @@ def train(analysis: bool):
     X_train_processed = preprocess_data(X_train)
 
     model = train_model(X_train_processed, y_train)
-    predictions = validate_model(model, X_valid, y_valid)
+    validate_model(model, X_valid, y_valid, analysis=analysis)
 
     save_model(model, MODEL_PATH)
-
-    if analysis:
-        plot_confusion_matrix(y_valid, predictions)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train the model.")

@@ -2,6 +2,8 @@ import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_absolute_error, accuracy_score
 
+from src.scripts.analysis import plot_confusion_matrix
+
 
 def load_model(model_path: str) -> RandomForestClassifier:
     """Loads a trained model from a file using joblib."""
@@ -18,7 +20,7 @@ def train_model(X_train, y_train) -> RandomForestClassifier:
     return model
 
 
-def validate_model(model, X_valid, y_valid) -> float:
+def validate_model(model, X_valid, y_valid, analysis=False):
     """Calculates the Mean Absolute Error (MAE) and Accuracy."""
     predictions = model.predict(X_valid)
 
@@ -30,7 +32,9 @@ def validate_model(model, X_valid, y_valid) -> float:
         f'📊 MAE (Cross-Validation): {mae:.2f} (± {mae:.2f})\n'
         f'🔍 Accuracy: {accuracy:.4f} ({accuracy:.0%})\n'
     )
-    return predictions
+
+    if analysis:
+        plot_confusion_matrix(y_valid, predictions)
 
 
 def save_model(model, model_path: str) -> None:
