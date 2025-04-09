@@ -15,7 +15,8 @@ def train(analysis: bool):
         numeric_histogram(data)
         numeric_pair_plot(data)
         numeric_correlation_heatmap(data)
-        categorical_count_plot(data)
+        data_filtered = data.drop(['Peak Position', 'Song', 'Artist'], axis=1)
+        categorical_count_plot(data_filtered)
 
     data = feature_engineering(data)
 

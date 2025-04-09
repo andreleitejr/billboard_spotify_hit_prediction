@@ -11,10 +11,12 @@ def numeric_histogram(data: pd.DataFrame) -> None:
     numeric_features = numeric_data.columns
 
     plt.figure(figsize=(15, 10))
+
     for i, col in enumerate(numeric_features, 1):
         plt.subplot(3, 4, i)
         sns.histplot(numeric_data[col], kde=True, bins=20)
         plt.title(col)
+
     plt.tight_layout()
     plt.show()
 
@@ -24,6 +26,7 @@ def numeric_pair_plot(data: pd.DataFrame) -> None:
     numeric_data = data.select_dtypes(include=[np.number])
 
     sns.pairplot(numeric_data, corner=True, plot_kws={'alpha': 0.5, 's': 25})
+
     plt.show()
 
 
@@ -42,8 +45,6 @@ def numeric_correlation_heatmap(data: pd.DataFrame) -> None:
 
 def categorical_count_plot(data: pd.DataFrame) -> None:
     """Displays count plots for all categorical features in the dataset, except Peak Position, Song and Artist."""
-    data = data.drop(['Peak Position', 'Song', 'Artist'], axis=1)
-
     categorical_cols = data.select_dtypes(include=['object', 'category']).columns
 
     for col in categorical_cols:
@@ -54,14 +55,17 @@ def categorical_count_plot(data: pd.DataFrame) -> None:
         plt.tight_layout()
         plt.show()
 
-def plot_confusion_matrix(y_valid, predictions) -> None:
+def plot_confusion_matrix(y_valid, predictions, labels) -> None:
     """Plots a confusion matrix comparing true and predicted labels."""
     cm = confusion_matrix(y_valid, predictions)
+
     plt.figure(figsize=(6, 4))
+
     sns.heatmap(cm, annot=True, fmt='d',
                 cmap='Blues', cbar=False,
-                xticklabels=['Not Hit', 'Hit'],
-                yticklabels=['Not Hit', 'Hit'])
+                xticklabels=labels,
+                yticklabels=labels)
+
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
     plt.title('Confusion Matrix')

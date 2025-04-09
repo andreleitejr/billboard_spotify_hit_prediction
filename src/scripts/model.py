@@ -7,12 +7,12 @@ from src.scripts.analysis import plot_confusion_matrix
 def load_model(model_path: str) -> RandomForestClassifier:
     """Loads a trained model from a file using joblib."""
     model = joblib.load(model_path)
+
     return model
 
 
 def train_model(X_train, y_train) -> RandomForestClassifier:
     """Trains an RandomForestClassifier with predefined hyperparameters."""
-
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
@@ -33,7 +33,7 @@ def validate_model(model, X_valid, y_valid, analysis=False) -> None:
     )
 
     if analysis:
-        plot_confusion_matrix(y_valid, predictions)
+        plot_confusion_matrix(y_valid, predictions, labels=['Not Hit', 'Hit'])
 
 
 def save_model(model, model_path: str) -> None:
